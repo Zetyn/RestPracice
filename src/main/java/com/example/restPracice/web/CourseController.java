@@ -6,7 +6,7 @@ import com.example.restPracice.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 
 @RestController
 public class CourseController {
@@ -14,12 +14,12 @@ public class CourseController {
     private CourseService courseService;
 
     @GetMapping("/courses")
-    public Set<CourseDto> getAllCourses () {
+    public List<CourseDto> getAllCourses () {
         return courseService.getAllCourses();
     }
 
     @GetMapping("/course/{id}/students")
-    public Set<StudentDTO> getStudentsOnCourse(@PathVariable("id") Long id) {
+    public List<StudentDTO> getStudentsOnCourse(@PathVariable("id") Long id) {
         return courseService.getAllStudentOnCourse(id);
     }
 

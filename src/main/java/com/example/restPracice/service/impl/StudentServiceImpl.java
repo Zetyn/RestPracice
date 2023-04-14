@@ -12,7 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,23 +22,24 @@ public class StudentServiceImpl implements StudentService {
     private StudentRepository studentRepository;
     @Autowired
     private CourseRepository courseRepository;
-
     @Autowired
     private ModelMapper modelMapper;
 
     @Override
-    public Set<StudentDTO> getAllStudents() {
-        return studentRepository.findAll().stream()
+    public List<StudentDTO> getAllStudents() {
+        List<Student> s = new ArrayList<>();
+        studentRepository.findAll().forEach(s::add);
+        return s.stream()
                 .map(student -> modelMapper.map(student,StudentDTO.class))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Set<CourseDto> getStudentCourses(Long studentId) {
+    public List<CourseDto> getStudentCourses(Long studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow(NotFoundExeption::new);
         return student.getCourses()
                 .stream().map(course -> modelMapper.map(course, CourseDto.class))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -56,7 +58,7 @@ public class StudentServiceImpl implements StudentService {
     public void addStudentCourse(Long studentId, Long courseId) {
         Student student = studentRepository.findById(studentId).orElseThrow(NotFoundExeption::new);
         Course course = courseRepository.findById(courseId).orElseThrow(NotFoundExeption::new);
-        Set<Course> courses = student.getCourses();
+        List<Course> courses = student.getCourses();
         courses.add(course);
         student.setCourses(courses);
         studentRepository.save(student);
@@ -66,7 +68,7 @@ public class StudentServiceImpl implements StudentService {
     public void deleteStudentCourse(Long studentId, Long courseId) {
         Student student = studentRepository.findById(studentId).orElseThrow(NotFoundExeption::new);
         Course course = courseRepository.findById(courseId).orElseThrow(NotFoundExeption::new);
-        Set<Course> courses = student.getCourses();
+        List<Course> courses = student.getCourses();
         courses.remove(course);
         student.setCourses(courses);
         studentRepository.save(student);

@@ -11,7 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,17 +22,19 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private ModelMapper modelMapper;
     @Override
-    public Set<CourseDto> getAllCourses() {
-        return courseRepository.findAll().stream()
+    public List<CourseDto> getAllCourses() {
+        List<Course> courses = new ArrayList<>();
+        courseRepository.findAll().forEach(courses::add);
+        return courses.stream()
                 .map(course -> modelMapper.map(course, CourseDto.class))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Set<StudentDTO> getAllStudentOnCourse(Long courseId) {
+    public List<StudentDTO> getAllStudentOnCourse(Long courseId) {
         Course course = courseRepository.findById(courseId).orElseThrow(NotFoundExeption::new);
-        Set<Student> students = course.getStudents();
-        return students.stream().map(student -> modelMapper.map(student,StudentDTO.class)).collect(Collectors.toSet());
+        List<Student> students = course.getStudents();
+        return students.stream().map(student -> modelMapper.map(student,StudentDTO.class)).collect(Collectors.toList());
     }
 
     @Override

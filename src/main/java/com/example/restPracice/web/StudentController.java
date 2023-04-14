@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 
 @RestController
 public class StudentController {
@@ -15,7 +15,7 @@ public class StudentController {
     private StudentService studentService;
 
     @GetMapping("/students")
-    public Set<StudentDTO> getAll() {
+    public List<StudentDTO> getAll() {
         return studentService.getAllStudents();
     }
 
@@ -25,7 +25,7 @@ public class StudentController {
     }
 
     @GetMapping("/student/{id}/courses")
-    public Set<CourseDto> getStudentCourses(@PathVariable("id") Long id) {
+    public List<CourseDto> getStudentCourses(@PathVariable("id") Long id) {
         return studentService.getStudentCourses(id);
     }
 
